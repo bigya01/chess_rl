@@ -27,7 +27,3 @@ jobs:
       - name: Build and test
         run: |
           make
-
-      - name: Run the executable
-        run: |
-          ./bin/chess
