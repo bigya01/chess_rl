@@ -14,7 +14,7 @@ SFML_LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 SOURCES := $(shell find $(SRC_DIR) -name "*.cpp")
 SOURCES += main.cpp
 OBJECTS := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
-EXECUTABLE = $(BIN_DIR)/myproject
+EXECUTABLE = $(BIN_DIR)/chess
 
 # Build rule
 $(EXECUTABLE): $(OBJECTS)
