@@ -16,13 +16,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up SFML
-        uses: snd/setup-sfml@v1
+      # - name: Set up SFML
+      #   uses: snd/setup-sfml@v1
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y g++
+          sudo apt-get install -y g++ libsfml-dev
 
       - name: Build and test
         run: |
