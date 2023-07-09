@@ -1,12 +1,18 @@
-#include <SFML/Graphics.hpp>
+#include "window.hpp"
+Board::Board()
+:mwindow(sf::VideoMode(1080, 1080), "SFML works!"),
 
-int init_window()
-{
-    sf::RenderWindow window(sf::VideoMode(1000, 800), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+wtiles(){
+    wtiles.setSize(sf::Vector2f(120, 50));
+    wtiles.setFillColor(sf::Color::White);
+};
+btiles(){
+    btiles.setSize(sf::Vector2f(120, 50));
+    btiles.setFillColor(sf::Color::Black);
+}
 
-    while (window.isOpen())
+void Board:: init_window(){
+     while (window.isOpen())
     {
         sf::Event event;
         while (window.pollEvent(event))
@@ -15,10 +21,70 @@ int init_window()
                 window.close();
         }
 
-        window.clear();
-        window.draw(shape);
-        window.display();
+        Chess_Board() ;       
+        draw();
+        display();
     }
 
-    return 0;
 }
+void Board::Chess_Board(){
+    for(int i=0;i<8;i++){
+        for (int j=0;j<8;j++){
+            bool isLightSquare=(i+j)%2!=0;
+            int squareColour =(isLightSquare)?btiles:wtiles:
+            int position =new Vector(120+i,50+j);
+            
+        }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// #include <SFML/Graphics.hpp>
+
+// int init_window()
+// {
+//     sf::RenderWindow window(sf::VideoMode(1080, 1080), "SFML works!");
+//     sf::RectangleShape rectangle(sf::Vector2f(128.0f,128.0f));
+
+//     
+
+//     while (window.isOpen())
+//     {
+//         sf::Event event;
+//         while (window.pollEvent(event))
+//         {
+//             if (event.type == sf::Event::Closed)
+//                 window.close();
+//         }
+
+//         window.clear();
+//         window.draw(rectangle);
+//         window.display();
+//     }
+
+//     return 0;
+// }
