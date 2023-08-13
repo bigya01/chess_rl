@@ -1,9 +1,10 @@
-#include<iostream>
-#include "window.hpp"
+#include <iostream>
+#include "game.hpp"
 
 using namespace std;
 
-int main(){
-    init_window();
-    Chess_Board();
+int main()
+{
+    Game game;
+    game.run();
 }
