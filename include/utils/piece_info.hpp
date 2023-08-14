@@ -1,5 +1,5 @@
 #pragma once
-
+#include <map>
 class Piece{
 public:
     static const int None = 0;
@@ -11,6 +11,7 @@ public:
     static const int Queen = 6;
     static const int White = 8;
     static const int Black = 16;
+    static std::map<char,int> pieceFromSymbol;
     bool isColor(int piece, int color);
     int color(int piece);
     int type(int piece);
