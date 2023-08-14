@@ -3,8 +3,9 @@
 #include <SFML/Graphics.hpp>
 
 Game::Game(){
-    mWindow.create(sf::VideoMode(640, 480), "Chess");
+    mWindow.create(sf::VideoMode(1280, 800), "Chess");
 }
+Game::~Game(){}
 
 void Game::run(){
     while (mWindow.isOpen()){

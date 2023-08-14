@@ -1,4 +1,4 @@
-#include "logic/boardState.hpp"
+#include "logic/board_state.hpp"
 #include "utils/piece.hpp"
 #include <map>
 #include <string>
