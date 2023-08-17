@@ -1,12 +1,74 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <logic/game_state.hpp>
+#include <logic/board_state.hpp>
+#include <game.hpp>
+#include <utils/asset_manager.hpp>
 
-class ChessBoard
+class ChessBoard : public GameState
 {
-private:
-    sf::RectangleShape mBoard[8][8];
-    void initBoard();
+
 public:
-    ChessBoard();
+    ChessBoard(Game *_gameRef, std::string name1 = "Bindu", std::string name2 = "Krishant", int _startTime = 10, bool _useEngine = false);
+    ~ChessBoard() override;
+
+    void init() override;
+    void setBoard();
+    void resetBoard();
+
+    // handleEvents
+    void handleInput(sf::Event &event) override;
+    void handleMouseDown(sf::Event &event);
+    void handleMouseUp(sf::Event &event);
+
+    bool makeMove(Coordinate location, int promotionType = 0);
+
+    void update() override;
+    void render() override;
+
+    void loadAssets();
+
+    void engineMove();
+
+    void goToMainMenu();
+
+    void resign();
+
+private:
+    Game *gameRef;
+    BoardState state;
+    Coordinate boardStartPos;
+    std::vector<Move> moves;
+    std::vector<std::vector<Move>> allMoves;
+    Promotion::uiInfo promotionInfo;
+    lastMoveInfo::State lastMoveState;
+
+    float score[2] = {0, 0};
+    sf::Texture scoreTexture[2];
+    void resetScoreTexture();
+
+    bool useEngine;
+    bool enginePlaysWhite;
+
+    LastMove lastMove;
+    Player *players[2];
+    int playerTime[2];
+    std::string PlayerNames[2];
+    bool hasPlayedMove[2];
+    int startTime;
     void display(sf::RenderWindow &window);
+    sf::RectangleShape resetButton, exitButton, resignButton;
+    sf::Texture horizontalNotation[8];
+    sf::Texture verticalNotation[8];
+    sf::Texture playerNamesTexture[2]; // Stores the texture of player
+    sf::Texture resetButtonTexture;
+    sf::Texture checkTexture, checkMateTexture, outOfTimeTexture, matchDrawTexture,
+        blackResignTexture, whiteResignTexture;
+    sf::Texture numberTextures[10]; // Stores the textures for numbers 0-9
+    sf::Texture wonTexture;
+    sf::Texture colonTexture;
+    sf::Texture pieceTexture; // Stores texture of all pieces
+    sf::Texture exitButtionTexture;
+    sf::Texture resignButtonTexture;
+    sf::Texture scoreboardTexture;
 };

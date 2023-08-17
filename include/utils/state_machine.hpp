@@ -3,7 +3,6 @@
 #include <memory>
 #include <stack>
 
-#include "logic/state_machine.hpp"
 #include "logic/game_state.hpp"
 
 class StateMachine {

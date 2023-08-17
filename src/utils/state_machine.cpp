@@ -1,4 +1,4 @@
-#include "logic/state_machine.hpp"
+#include "utils/state_machine.hpp"
 #include "logic/game_state.hpp"
 
 StateMachine::StateMachine() {}
