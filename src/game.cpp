@@ -21,7 +21,8 @@ void Game::init()
 }
 Game::~Game() {}
 
-bool Game::running(){
+bool Game::running()
+{
     return isRunning;
 }
 
@@ -64,19 +65,10 @@ void Game::exitGame()
     this->isRunning = false;
 }
 
-void Game::createGameBoard(std::string name1, std::string name2,
-                           int _startTime, bool useEngine)
+void Game::createGameBoard(int _startTime, bool useEngine)
 {
-    if (name1.length() == 0)
-    {
-        name1 += "Bindu";
-    }
-    if (name2.length() == 0)
-    {
-        name2 += "Krishant";
-    }
     stateMachine.AddState(
-        new ChessBoard(this, name1, name2, _startTime, useEngine), true);
+        new ChessBoard(this, "Player1", "Player2", _startTime, useEngine), true);
 }
 
 void Game::goBackToMenu()

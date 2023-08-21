@@ -28,12 +28,12 @@ public:
 
     bool running();
 
-    void createGameBoard(std::string name0, std::string name1, int _startTime = 10, bool _useEngine = false);
+    void createGameBoard(int _startTime = 10, bool _useEngine = false);
     void goBackToMenu();
+    sf::RenderWindow mWindow;
 
 private:
     bool isRunning;
-    sf::RenderWindow mWindow;
     StateMachine stateMachine;
     GameInfo::State state;
     int count = 0;

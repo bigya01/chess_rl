@@ -3,7 +3,6 @@
 #include <logic/game_state.hpp>
 #include <logic/board_state.hpp>
 #include <game.hpp>
-#include <utils/asset_manager.hpp>
 
 class ChessBoard : public GameState
 {
@@ -57,6 +56,10 @@ private:
     bool hasPlayedMove[2];
     int startTime;
     void display(sf::RenderWindow &window);
+
+
+    // UI
+    sf::RectangleShape board[8][8];
     sf::RectangleShape resetButton, exitButton, resignButton;
     sf::Texture horizontalNotation[8];
     sf::Texture verticalNotation[8];

@@ -442,45 +442,45 @@ int Engine::generateAllMoves(const BoardState &state,
     return count;
 }
 
-// Move *Engine::generateAIMove(const BoardState &state,
-//                              std::vector<std::vector<Move>> &allMoves)
-// {
-//     /*
-//      * Used to generate ai moves
-//      * Returns the move generated
-//      */
-//     static int callCount = 0;
-//     Engine::EngineDifficulty difficulty = Engine::Random;
-//     /*
-//     if (callCount >= 1) {
-//       difficulty = Engine::Evaluated;
-//     }
-//     */
+Move *Engine::generateAIMove(const BoardState &state,
+                             std::vector<std::vector<Move>> &allMoves)
+{
+    /*
+     * Used to generate ai moves
+     * Returns the move generated
+     */
+    static int callCount = 0;
+    Engine::EngineDifficulty difficulty = Engine::Random;
+    /*
+    if (callCount >= 1) {
+      difficulty = Engine::Evaluated;
+    }
+    */
 
-//     callCount++;
-//     if (difficulty == Engine::None)
-//     {
-//         return nullptr;
-//     }
+    callCount++;
+    if (difficulty == Engine::None)
+    {
+        return nullptr;
+    }
 
-//     switch (difficulty)
-//     {
-//     case Engine::None:
-//     {
-//         return nullptr;
-//     }
-//     case Engine::Random:
-//     {
-//         return Engine::randomAI(state, allMoves);
-//     }
-//     case Engine::Evaluated:
-//     {
-//         return Engine::evaluateAI(state, allMoves);
-//     }
-//     }
+    switch (difficulty)
+    {
+    case Engine::None:
+    {
+        return nullptr;
+    }
+    case Engine::Random:
+    {
+        return Engine::randomAI(state, allMoves);
+    }
+    case Engine::Evaluated:
+    {
+        return Engine::evaluateAI(state, allMoves);
+    }
+    }
 
-//     return nullptr;
-// }
+    return nullptr;
+}
 
 Move *Engine::randomAI(const BoardState &state,
                        std::vector<std::vector<Move>> &allMoves)

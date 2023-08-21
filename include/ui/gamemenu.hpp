@@ -3,6 +3,7 @@
 #include "game.hpp"
 #include "logic/game_state.hpp"
 
+
 class GameMenu : public GameState
 {
 public:
@@ -13,7 +14,6 @@ public:
     void render() override;
     void update() override;
 
-    void loadAssets();
     enum TimeIndex
     {
         One = 0,
@@ -22,22 +22,15 @@ public:
     };
 
 private:
-    std::string names[2];
-    sf::RectangleShape namesBox[2];
-    sf::Texture cursorTexture;
-    sf::Texture namesPromptTexture[2];
-    sf::Texture namesTexture[2];
-
-    bool isNameOneTheFocus;
-    bool displayCursor;
-    int count;
-    TimeIndex timeIndex;
-
-    sf::RectangleShape singleButton, twoButton, exitButton,
-        backdrop, square, squar, min, tenmin, thirtymin;
-    sf::Texture singleTexture, twoTexture, exitTexture, backdropTexture,
-        squareTexture, squarTexture;
-    sf::Texture minTexture[2], tenminTexture[2], thirtyminTexture[2];
-
+    sf::RenderWindow &window;
+    sf::Font font;
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
     Game *gameRef;
+
+    sf::Text title, singlePlayer, multiPlayer, exit, timeText, time[3];
+
+    int selectedTime = 1;
+
+
 };

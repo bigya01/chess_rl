@@ -1,6 +1,11 @@
 #include "logic/board_state.hpp"
 #include "logic/piece.hpp"
 
+Piece *BoardState::getPiece(Coordinate location)
+{
+    return board[location.i][location.j];
+}
+
 Piece *BoardState::getPiece(int id)
 {
     for (int i = 0; i < 2; i++)
