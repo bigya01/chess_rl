@@ -1,10 +1,16 @@
 #include <iostream>
 #include "game.hpp"
+#include "utils/test.hpp"
 
 using namespace std;
 
-int main()
+int main(int argc, char *argv[])
 {
+    if(argc == 2)
+    {
+        Test t;
+        t.standardPerft();
+    }
     Game *game = nullptr;
     game = new Game();
     game->init();
@@ -16,4 +22,5 @@ int main()
     }
     delete game;
     return 0;
+    
 }
