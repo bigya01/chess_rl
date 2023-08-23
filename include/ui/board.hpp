@@ -35,6 +35,7 @@ public:
 
 private:
     Game *gameRef;
+    sf::RenderWindow& window;
     BoardState state;
     Coordinate boardStartPos;
     std::vector<Move> moves;

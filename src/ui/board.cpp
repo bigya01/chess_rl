@@ -18,7 +18,7 @@ std::string scoreToString(float score);
 
 ChessBoard::ChessBoard(Game *_gameRef, std::string name1, std::string name2,
                        int _startTimeInMinutes, bool _useEngine)
-    : gameRef(_gameRef), startTime(_startTimeInMinutes)
+    : gameRef(_gameRef), startTime(_startTimeInMinutes), window(_gameRef->mWindow)
 {
     PlayerNames[0] = name1;
     PlayerNames[1] = name2;
@@ -33,40 +33,25 @@ ChessBoard::~ChessBoard()
 
 void ChessBoard::init()
 {
-    if (!font.loadFromFile("jost.ttf"))
-    {
-        // Handle font loading error
-        return EXIT_FAILURE;
-    }
-    if (!frame.loadFromFile("framee.png")) {
-        // Error handling if image loading fails
-        return EXIT_FAILURE;
-    }
-
+    font.loadFromFile("assets/fonts/jost.ttf");
+    
+    frame.loadFromFile("assets/images/framee.png");
     // Create a sprite using the loaded texture
-    frameSprite1.setTexture(texture);
+    frameSprite1.setTexture(frame);
 
     // Set the position of the sprite
     frameSprite1.setPosition(10, 15); // Set the desired position (x, y)
     frameSprite1.setScale(0.5f,0.5f);
 
     // Create a sprite using the loaded texture
-    frameSprite2.setTexture(texture);
+    frameSprite2.setTexture(frame);
 
     // Set the position of the sprite
     frameSprite2.setPosition(1017, 535); // Set the desired position (x, y)
     frameSprite2.setScale(0.5f,0.5f);
 
 
-
-
-
-
-    if (!bfont.loadFromFile("Jost-SemiBold.ttf"))
-    {
-        // Handle font loading error
-        return EXIT_FAILURE;
-    }
+    bfont.loadFromFile("assets/fontsJost-SemiBold.ttf");
     // Chessboard
    
 
@@ -135,7 +120,7 @@ void ChessBoard::init()
 
 
       // head2
-    head2.setString("PLAYER 2", bfont, 35);
+    head2.setString("PLAYER 2");
     head2.setFont(bfont);
     head2.setCharacterSize(35);
     head2.setFillColor(sf::Color(0x253747FF)); // Hexadecimal color: #FF3366
