@@ -78,7 +78,7 @@ void GameMenu::handleInput(sf::Event &event)
         else if (multiPlayer.getGlobalBounds().contains(mousePos.x, mousePos.y))
         {
             // Handle multiplayer button click
-            gameRef->createGameBoard(selectedTime, true);
+            gameRef->createGameBoard(selectedTime);
         }
         else if (exit.getGlobalBounds().contains(mousePos.x, mousePos.y))
         {
@@ -87,15 +87,15 @@ void GameMenu::handleInput(sf::Event &event)
         }
         else if (time[0].getGlobalBounds().contains(mousePos.x, mousePos.y))
         {
-            selectedTime = 0;
+            selectedTime = TimeIndex::One;
         }
         else if (time[1].getGlobalBounds().contains(mousePos.x, mousePos.y))
         {
-            selectedTime = 1;
+            selectedTime = TimeIndex::Ten;
         }
         else if (time[2].getGlobalBounds().contains(mousePos.x, mousePos.y))
         {
-            selectedTime = 2;
+            selectedTime = TimeIndex::Thirty;
         }
     }
 }

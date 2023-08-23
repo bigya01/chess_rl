@@ -25,8 +25,6 @@ public:
     void update() override;
     void render() override;
 
-    void loadAssets();
-
     void engineMove();
 
     void goToMainMenu();
@@ -57,6 +55,8 @@ private:
     bool hasPlayedMove[2];
     int startTime;
     void display(sf::RenderWindow &window);
+
+    //ui
     sf::Font font;
     sf::Font bfont;
     sf::Texture frame;
@@ -67,6 +67,8 @@ private:
     sf::RectangleShape tile[8][8];
     sf::Text textreset,textresign,textex,head1,head2,player1,player2,winner;
     sf::RectangleShape buttonreset,buttonresign,buttonex;
+
+    
     // UI
     sf::RectangleShape board[8][8];
     sf::RectangleShape resetButton, exitButton, resignButton;
