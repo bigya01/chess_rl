@@ -9,7 +9,8 @@ int main(int argc, char *argv[])
     if(argc == 2)
     {
         Test t;
-        t.standardPerft();
+        t.standardPerft(atoi(argv[1]));
+        return 0;
     }
     Game *game = nullptr;
     game = new Game();

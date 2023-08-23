@@ -5,13 +5,13 @@
 #define NEW_FEN                                                                \
   "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -"
 
-void Test::standardPerft() {
+void Test::standardPerft(int a) {
   using std::chrono::duration;
   using std::chrono::duration_cast;
   using std::chrono::high_resolution_clock;
   using std::chrono::milliseconds;
 
-  for (int i = 0; i < 5; i++) {
+  for (int i = 0; i < a; i++) {
     std::cout << "Depth: " << i + 1 << std::endl;
     std::cout << "Number of Positions: ";
 
