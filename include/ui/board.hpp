@@ -56,8 +56,16 @@ private:
     bool hasPlayedMove[2];
     int startTime;
     void display(sf::RenderWindow &window);
-
-
+    sf::Font font;
+    sf::Font bfont;
+    sf::Texture frame;
+    sf::Sprite frameSprite1;
+    sf::Sprite frameSprite2;
+    int gridSize =8;
+    int tileSize=85;
+    sf::RectangleShape tile[8][8];
+    sf::Text textreset,textresign,textex,head1,head2,player1,player2,winner;
+    sf::RectangleShape buttonreset,buttonresign,buttonex;
     // UI
     sf::RectangleShape board[8][8];
     sf::RectangleShape resetButton, exitButton, resignButton;

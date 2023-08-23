@@ -13,7 +13,7 @@ GameMenu::~GameMenu()
 
 void GameMenu::init()
 {
-    backgroundTexture.loadFromFile("assets/bg.jpeg");
+    backgroundTexture.loadFromFile("assets/images/bg.jpeg");
     backgroundSprite.setTexture(backgroundTexture);
     backgroundSprite.setScale(static_cast<float>(1280) / backgroundTexture.getSize().x,
                               static_cast<float>(800) / backgroundTexture.getSize().y);
