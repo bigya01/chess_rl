@@ -45,6 +45,20 @@ void ChessBoard::render()
 
 void ChessBoard::update()
 {
+    if ((lastMoveState == lastMoveInfo::None) ||
+        (lastMoveState == lastMoveInfo::Check))
+    {
+        if (!hasPlayedMove[!state.isWhiteTurn])
+            return;
+
+        playerTime[!state.isWhiteTurn]--;
+        if (playerTime[!state.isWhiteTurn] < 0)
+        {
+            lastMoveState = lastMoveInfo::OutofTime;
+            playerTime[!state.isWhiteTurn] = 0;
+            score[0] += 1;
+        }
+    }
 }
 
 void ChessBoard::setBoard()
@@ -75,6 +89,25 @@ void ChessBoard::setBoard()
     {
         ChessBoard::engineMove();
     }
+}
+
+void ChessBoard::resetBoard()
+{
+    // We swap the names, namesTexture and score texture after game is reset
+    std::string tempStr;
+    float tempInt;
+    tempInt = score[1];
+    score[1] = score[0];
+    score[0] = tempInt;
+    tempStr = PlayerNames[1];
+    PlayerNames[1] = PlayerNames[0];
+    PlayerNames[0] = tempStr;
+    // resetScoreTexture();
+    enginePlaysWhite = !enginePlaysWhite;
+
+    delete state.players[0];
+    delete state.players[1];
+    setBoard();
 }
 
 void ChessBoard::goToMainMenu() { gameRef->goBackToMenu(); }

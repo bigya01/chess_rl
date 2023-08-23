@@ -8,7 +8,7 @@
 class Test
 {
 public:
-    void standardPerft();
+    void standardPerft(int a);
     void generateAllMoves(int depth, bool first);
 
 private:
