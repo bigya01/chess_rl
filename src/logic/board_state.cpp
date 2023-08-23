@@ -1,36 +1,95 @@
 #include "logic/board_state.hpp"
-#include "utils/piece.hpp"
-#include <map>
-#include <string>
+#include "logic/piece.hpp"
 
-BoardState::BoardState()
+Piece *BoardState::getPiece(Coordinate location)
 {
-    loadfromFen(startFen);
+    return board[location.i][location.j];
 }
 
-void BoardState::loadfromFen(std::string fen)
+Piece *BoardState::getPiece(int id)
 {
-    
-
-
-    int file = 0, rank = 7;
-    std::string fenString = fen.substr(0, fen.find(' '));
-    for (char c : fen)
+    for (int i = 0; i < 2; i++)
     {
-        if (c == '/')
+        for (Piece *p : players[i]->pieces)
         {
-            file = 0;
-            rank--;
-        }
-        else if (isdigit(c))
-        {
-            file += c - '0';
-        }
-        else
-        {
-            *board[rank*8 +file] = Piece::pieceFromSymbol[c];
-            file++;
+            if (p->getID() == id)
+            {
+                return p;
+            }
         }
     }
 
+    return nullptr;
+}
+bool BoardState::isPieceWhite(Coordinate location) const
+{
+    return board[location.i][location.j]->isWhite();
+}
+int BoardState::getId(Coordinate location) const
+{
+    return board[location.i][location.j]->getID();
+}
+
+bool BoardState::isEmpty(Coordinate location) const
+{
+    if (!location.isValidBoardIndex())
+    {
+        return false;
+    }
+    if (board[location.i][location.j])
+    {
+        return false;
+    }
+    else
+        return true;
+}
+
+BoardState::~BoardState()
+{
+    if (players[0] && players[1])
+    {
+        delete players[0];
+        delete players[1];
+    }
+}
+
+// Copy Constructor
+BoardState::BoardState(const BoardState &s)
+    : enPassantAvailable(s.enPassantAvailable), enPassant(s.enPassant),
+      isWhiteTurn(s.isWhiteTurn), dragPieceId(s.dragPieceId),
+      dragPieceLocation(s.dragPieceLocation)
+{
+
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            board[i][j] = nullptr;
+        }
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        CastleAvailability[i] = s.CastleAvailability[i];
+    }
+
+    for (int i = 0; i < 2; i++)
+    {
+        players[i] = new Player(s.players[i]->getName(), s.players[i]->isWhite());
+        for (Piece *p : s.players[i]->pieces)
+        {
+            Piece *newP = p->clone();
+            players[i]->pieces.push_back(newP);
+            Coordinate destination = newP->getCoordinate();
+            if (!newP->isCaptured())
+            {
+                board[destination.i][destination.j] = newP;
+            }
+        }
+    }
+}
+BoardState::BoardState()
+{
+    players[0] = nullptr;
+    players[1] = nullptr;
 }
