@@ -3,6 +3,8 @@
 #include <logic/game_state.hpp>
 #include <logic/board_state.hpp>
 #include <game.hpp>
+#include "utils/sound_manager.hpp"
+#include <list>
 
 class ChessBoard : public GameState
 {
@@ -17,8 +19,8 @@ public:
 
     // handleEvents
     void handleInput(sf::Event &event) override;
-    void handleMouseDown(sf::Event &event);
-    void handleMouseUp(sf::Event &event);
+    void handleMouseReleased(sf::Event &event);
+    void handleMousePressed(sf::Event &event);
 
     bool makeMove(Coordinate location, int promotionType = 0);
 
@@ -32,8 +34,9 @@ public:
     void resign();
 
 private:
+    SoundManager soundManager;
     Game *gameRef;
-    sf::RenderWindow& window;
+    sf::RenderWindow &window;
     BoardState state;
     Coordinate boardStartPos;
     std::vector<Move> moves;
@@ -54,23 +57,28 @@ private:
     std::string PlayerNames[2];
     bool hasPlayedMove[2];
     int startTime;
-    void display(sf::RenderWindow &window);
+    // std::list<sf::Sprite> pieceSprites; // List to store piece sprites
+    // sf::Sprite* selectedSprite = nullptr; // Keep track of the selected sprite
+    // sf::Vector2f offset; // Offset between mouse and sprite
 
-    //ui
+    // ui
+    std::string timeStr[2];
     sf::Font font;
     sf::Font bfont;
     sf::Texture frame;
     sf::Sprite frameSprite1;
     sf::Sprite frameSprite2;
-    int gridSize =8;
-    int tileSize=85;
+    int gridSize = 8;
+    int tileSize = 85;
     sf::RectangleShape tile[8][8];
-    sf::Text textreset,textresign,textex,head1,head2,player1,player2,winner;
-    sf::RectangleShape buttonreset,buttonresign,buttonex;
+    sf::Text textreset, textresign, textex, head1, head2, player1, player2, winner;
+    sf::RectangleShape buttonreset, buttonresign, buttonex;
+    sf::Texture piecesTexture;
+    sf::CircleShape moveHint;
 
-    
+
+
     // UI
-    sf::RectangleShape board[8][8];
     sf::RectangleShape resetButton, exitButton, resignButton;
     sf::Texture horizontalNotation[8];
     sf::Texture verticalNotation[8];

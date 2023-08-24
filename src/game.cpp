@@ -10,7 +10,14 @@ void Game::init()
     try
     {
         mWindow.create(sf::VideoMode(1280, 800), "Chess");
+        mWindow.setFramerateLimit(60);
         isRunning = true;
+        sf::Image icon;
+        if (icon.loadFromFile("assets/images/icon.png"))
+        {
+            // Set the icon
+            mWindow.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+        }
         GameMenu *menu = new GameMenu(this);
         stateMachine.AddState(menu);
     }
@@ -67,8 +74,10 @@ void Game::exitGame()
 
 void Game::createGameBoard(int _startTime, bool useEngine)
 {
-    stateMachine.AddState(
-        new ChessBoard(this, "Player1", "Player2", _startTime, useEngine), true);
+    useEngine ? stateMachine.AddState(
+                    new ChessBoard(this, "Krishant", "Computer", _startTime, useEngine), true)
+              : stateMachine.AddState(
+                    new ChessBoard(this, "Krishant", "Bindu", _startTime, useEngine), true);
 }
 
 void Game::goBackToMenu()

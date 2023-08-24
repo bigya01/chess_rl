@@ -14,6 +14,7 @@ GameMenu::~GameMenu()
 void GameMenu::init()
 {
     backgroundTexture.loadFromFile("assets/images/bg.jpeg");
+    backgroundTexture.setSmooth(true);
     backgroundSprite.setTexture(backgroundTexture);
     backgroundSprite.setScale(static_cast<float>(1280) / backgroundTexture.getSize().x,
                               static_cast<float>(800) / backgroundTexture.getSize().y);
@@ -73,12 +74,12 @@ void GameMenu::handleInput(sf::Event &event)
         if (singlePlayer.getGlobalBounds().contains(mousePos.x, mousePos.y))
         {
             // Handle single player button click
-            gameRef->createGameBoard(selectedTime, true);
+            gameRef->createGameBoard(timeIn[selectedTime], true);
         }
         else if (multiPlayer.getGlobalBounds().contains(mousePos.x, mousePos.y))
         {
             // Handle multiplayer button click
-            gameRef->createGameBoard(selectedTime);
+            gameRef->createGameBoard(timeIn[selectedTime], false);
         }
         else if (exit.getGlobalBounds().contains(mousePos.x, mousePos.y))
         {

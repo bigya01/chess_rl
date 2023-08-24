@@ -449,7 +449,7 @@ Move *Engine::generateAIMove(const BoardState &state,
      * Used to generate ai moves
      * Returns the move generated
      */
-    static int callCount = 0;
+    static int callCount = 2;
     Engine::EngineDifficulty difficulty = Engine::Random;
     /*
     if (callCount >= 1) {
@@ -529,7 +529,7 @@ Move *Engine::evaluateAI(const BoardState &state,
         {
             BoardState newState = state;
             Engine::placePiece(move, newState);
-            int eval = Engine::miniMax(newState, 3, true, -MAX_VALUE, MAX_VALUE);
+            int eval = Engine::miniMax(newState, 100, true, -MAX_VALUE, MAX_VALUE);
 
             if (eval > maxEval)
             {

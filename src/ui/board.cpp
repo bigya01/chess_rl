@@ -1,10 +1,14 @@
 #include "ui/board.hpp"
 #include "game.hpp"
+#include "logic/piece.hpp"
 #include <SFML/Graphics.hpp>
 #include "logic/engine.hpp"
 
 #define STARTING_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-#define FPS 144
+
+#define TEST_FEN "rnbqk2r/pp1ppppp/8/3N4/2p1P3/8/PPP2PPP/R1BQKB1R w KQkq - 0 1"
+
+#define FPS 60
 
 namespace Promotion
 {
@@ -33,28 +37,32 @@ ChessBoard::~ChessBoard()
 
 void ChessBoard::init()
 {
+    setBoard();
+    soundManager.loadSound("WhiteMove", "assets/sounds/movew.wav");
+    soundManager.loadSound("BlackMove", "assets/sounds/moveb.wav");
+    soundManager.loadSound("Capture", "assets/sounds/capture.wav");
+    soundManager.loadSound("Check", "assets/sounds/alert.wav");
+    soundManager.loadSound("CheckMate", "assets/sounds/checkmate.wav");
+
     font.loadFromFile("assets/fonts/jost.ttf");
-    
+
     frame.loadFromFile("assets/images/framee.png");
     // Create a sprite using the loaded texture
     frameSprite1.setTexture(frame);
 
     // Set the position of the sprite
     frameSprite1.setPosition(10, 15); // Set the desired position (x, y)
-    frameSprite1.setScale(0.5f,0.5f);
+    frameSprite1.setScale(0.5f, 0.5f);
 
     // Create a sprite using the loaded texture
     frameSprite2.setTexture(frame);
 
     // Set the position of the sprite
-    frameSprite2.setPosition(1017, 535); // Set the desired position (x, y)
-    frameSprite2.setScale(0.5f,0.5f);
+    frameSprite2.setPosition(1030, 535); // Set the desired position (x, y)
+    frameSprite2.setScale(0.5f, 0.5f);
 
-
-    bfont.loadFromFile("assets/fontsJost-SemiBold.ttf");
+    bfont.loadFromFile("assets/fonts/Jost-SemiBold.ttf");
     // Chessboard
-   
-
 
     for (int row = 0; row < gridSize; ++row)
     {
@@ -92,7 +100,7 @@ void ChessBoard::init()
     buttonresign.setPosition(45, 630);
     buttonresign.setFillColor(sf::Color(0x253747FF));
     // exit
-     textex.setString("EXIT");
+    textex.setString("EXIT");
     textex.setFont(font);
     textex.setCharacterSize(20);
     textex.setFillColor(sf::Color(0x35a163FF)); // Hexadecimal color: #FF3366
@@ -101,26 +109,19 @@ void ChessBoard::init()
     buttonex.setPosition(45, 690);
     buttonex.setFillColor(sf::Color(0x253747FF));
 
-
-
     // head1
-     head1.setString("PLAYER 1");
-     head1.setFont(bfont);
+    head1.setFont(bfont);
     head1.setCharacterSize(35);
     head1.setFillColor(sf::Color(0x253747FF)); // Hexadecimal color: #FF3366
     head1.setPosition(45, 40);
-  
+
     // player1
     player1.setFont(font);
     player1.setCharacterSize(30);
     player1.setFillColor(sf::Color(0x1B5233FF)); // Hexadecimal color: #FF3366
     player1.setPosition(45, 90);
-    player1.setString("SCORE\nTIMING");
 
-
-
-      // head2
-    head2.setString("PLAYER 2");
+    // head2
     head2.setFont(bfont);
     head2.setCharacterSize(35);
     head2.setFillColor(sf::Color(0x253747FF)); // Hexadecimal color: #FF3366
@@ -131,56 +132,272 @@ void ChessBoard::init()
     player2.setCharacterSize(30);
     player2.setFillColor(sf::Color(0x1B5233FF)); // Hexadecimal color: #FF3366
     player2.setPosition(1070, 600);
-    player2.setString("SCORE\nTIMING");
 
-    winner.setFont(font);
+    winner.setFont(bfont);
     winner.setCharacterSize(40);
     winner.setFillColor(sf::Color(0x7A3838FF)); // Hexadecimal color: #FF3366
     winner.setStyle(sf::Text::Bold);            // Set the player1 style to bold
-    winner.setString("PLAYER 1\nWINS");
     winner.setPosition(1070, 40);
+
+    piecesTexture.loadFromFile("assets/images/pieces.png");
+    piecesTexture.setSmooth(true);
+    moveHint.setRadius(15);
+    // moveHint.setPointCount(4);
+    // moveHint.setFillColor(sf::Color(0x1B5233FF));
+    moveHint.setOutlineThickness(3);
+    // moveHint.setOutlineColor(sf::Color(0x35a163FF));
 }
 
 void ChessBoard::handleInput(sf::Event &event)
 {
+    if (event.type == sf::Event::MouseButtonPressed)
+    {
+
+        handleMousePressed(event);
+    }
+    else if (event.type == sf::Event::MouseButtonReleased)
+    {
+        handleMouseReleased(event);
+    }
+}
+
+void ChessBoard::handleMousePressed(sf::Event &event)
+{
+
+    int col = (event.mouseButton.x - 320) / tileSize;
+    int row = (event.mouseButton.y - 60) / tileSize;
+    Coordinate location(row, col);
+    if (lastMoveState != lastMoveInfo::None &&
+        lastMoveState != lastMoveInfo::Check)
+    {
+        return;
+    }
+    if (event.mouseButton.button == sf::Mouse::Left)
+    {
+        if (location.isValidBoardIndex())
+        {
+            if (promotionInfo.promotion)
+            {
+                if (location.j != promotionInfo.location.j)
+                {
+                    return;
+                }
+
+                int direction = state.isWhiteTurn ? 1 : -1;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    if (location.i == promotionInfo.location.i + direction * i)
+                    {
+                        moves.push_back({state.dragPieceLocation, promotionInfo.location,
+                                         Promotion::promotionMap[i + 1]});
+                        makeMove(promotionInfo.location, i + 1);
+
+                        promotionInfo.promotion = false;
+
+                        if (useEngine && enginePlaysWhite == state.isWhiteTurn)
+                        {
+                            ChessBoard::engineMove();
+                        }
+                        break;
+                    }
+                }
+                return;
+            }
+            Piece *piece = state.getPiece(location);
+            if (piece)
+            {
+
+                // If it is not the player's turn, do nothing
+                if (piece->isWhite() != state.isWhiteTurn)
+                {
+                    return;
+                }
+
+                state.dragPieceId = piece->getID();
+                state.dragPieceLocation = location;
+                Engine::getMoveList(location, allMoves, moves);
+            }
+        }
+    }
+    else if (event.mouseButton.button == sf::Mouse::Right)
+    {
+    }
+}
+
+void ChessBoard::handleMouseReleased(sf::Event &event)
+{
+    int col = (event.mouseButton.x - 320) / tileSize;
+    int row = (event.mouseButton.y - 60) / tileSize;
+    Coordinate location(row, col);
+    if (event.mouseButton.button == sf::Mouse::Left)
+    {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        if (buttonex.getGlobalBounds().contains(mousePos.x, mousePos.y))
+        {
+            ChessBoard::goToMainMenu();
+            return;
+        }
+        if (buttonresign.getGlobalBounds().contains(mousePos.x, mousePos.y))
+        {
+            if (!(lastMoveState == lastMoveInfo::CheckMate ||
+                  lastMoveState == lastMoveInfo::Draw))
+                ChessBoard::resign();
+        }
+        if (lastMoveState != lastMoveInfo::None &&
+            lastMoveState != lastMoveInfo::Check)
+        {
+            if (buttonreset.getGlobalBounds().contains(mousePos.x, mousePos.y))
+            {
+                resetBoard();
+            }
+            return;
+        }
+        bool success = makeMove(location);
+        moves.clear();
+
+        if (success)
+        {
+            hasPlayedMove[state.isWhiteTurn] = true;
+            if (useEngine && enginePlaysWhite == state.isWhiteTurn)
+            {
+                ChessBoard::engineMove();
+            }
+        }
+    }
+    state.dragPieceId = 0;
 }
 
 void ChessBoard::render()
 {
-     window.clear(sf::Color(0x435B66FF));
-        for (int i = 0; i < gridSize; i++)
+    window.clear(sf::Color(0x435B66FF));
+
+    for (int i = 0; i < gridSize; i++)
+    {
+        for (int j = 0; j < gridSize; j++)
+            window.draw(tile[i][j]);
+    }
+    for (int i = 1; i < 9; i++)
+    {
+        char c = 'a' + i - 1;
+        std::string s(1, c);
+        sf::Text ltext(std::to_string(i), font, 24);
+        ltext.setPosition(280, (tileSize * i) + 15);
+        sf::Text rtext(s, font, 24);
+        rtext.setPosition((i * tileSize) + 280, 30);
+        // Draw the player1
+        window.draw(ltext);
+        window.draw(rtext);
+    }
+    //   pieces rendering
+    // std::cout << state.players[0]->pieces.size();
+    int capturedPieceOffset[2] = {0, 0};
+    int capturedPieceOffsetHeight[2] = {0, 0};
+
+    // resetScoreTexture();
+
+    for (int i = 0; i < 2; i++)
+    {
+        // std::cout << state.players[i]->getName();
+        for (Piece *piece : state.players[i]->pieces)
         {
-            for (int j = 0; j < gridSize; j++)
-                window.draw(tile[i][j]);
+            sf::Sprite sprite;
+            sprite.setTexture(piecesTexture);
+
+            // Calculate texture rectangle based on piece properties
+            int textureColumn = piece->getTextureColumn();
+            int textureRow = piece->isWhite() ? 0 : 1; // Assuming white is row 0, black is row 1
+            sprite.setTextureRect(sf::IntRect(textureColumn * 45, textureRow * 45, 45, 45));
+            sprite.setScale(64 / sprite.getLocalBounds().width, 64 / sprite.getLocalBounds().height);
+
+            // Set the position of the sprite
+
+            if (piece->isCaptured())
+            {
+                int index = piece->isWhite();
+                int x = index ? capturedPieceOffset[index] * 64 + 20 : capturedPieceOffset[index] * 64 + 1015;
+                int y = index ? capturedPieceOffsetHeight[index] * 64 + 275 : capturedPieceOffsetHeight[index] * 64 + 275;
+                capturedPieceOffset[index]++;
+                if (capturedPieceOffset[index] == 4)
+                {
+                    capturedPieceOffset[index] = 0;
+                    capturedPieceOffsetHeight[index]++;
+                }
+                sprite.setPosition(x, y);
+                window.draw(sprite);
+            }
+            else if (!(piece->getID() == state.dragPieceId))
+            {
+                Coordinate tempCor = piece->getCoordinate();
+                sprite.setPosition((tempCor.j * tileSize) + 330, (tempCor.i * tileSize) + 70);
+                window.draw(sprite);
+            }
         }
-        for (int i = 1; i < 9; i++)
+    }
+    for (Move move : moves)
+    {
+        if (state.isEmpty(move.endPos) &&
+            !(state.enPassantAvailable && state.enPassant == move.endPos))
         {
-            sf::Text ltext(std::to_string(i), font, 24);
-            ltext.setPosition(280, (tileSize * i) + 15);
-            sf::Text rtext(std::to_string(i), font, 24);
-            rtext.setPosition((i * tileSize) + 280, 30);
-            // Draw the player1
-            window.draw(ltext);
-            window.draw(rtext);
+            moveHint.setFillColor(sf::Color(0x1B5233FF));
+            moveHint.setOutlineColor(sf::Color(0x35a163FF));
         }
-        window.draw(frameSprite1);
-        window.draw(frameSprite2);
-        window.draw(player1);
-        window.draw(player2);
-        window.draw(head1);
-        window.draw(head2);
-        window.draw(buttonreset);
-        window.draw(textreset);
-        window.draw(buttonresign);
-        window.draw(textresign);
-        window.draw(buttonex);
-        window.draw(textex);
-        window.draw(winner);
-        
+        else
+        {
+            moveHint.setFillColor(sf::Color(0xFF0000FF));
+            moveHint.setOutlineColor(sf::Color(0xFFFFFFFF));
+        }
+        moveHint.setPosition((move.endPos.j * tileSize) + 347.5, (move.endPos.i * tileSize) + 87.5);
+        window.draw(moveHint);
+    }
+
+    Piece *dragPiece = state.getPiece(state.dragPieceId);
+    if (dragPiece)
+    {
+        sf::Sprite sprite;
+        sprite.setTexture(piecesTexture);
+        sprite.setTextureRect(sf::IntRect(dragPiece->getTextureColumn() * 45, (dragPiece->isWhite() ? 0 : 1) * 45, 45, 45));
+        sprite.setScale(64 / sprite.getLocalBounds().width, 64 / sprite.getLocalBounds().height);
+        sprite.setPosition(sf::Mouse::getPosition(window).x - 32, sf::Mouse::getPosition(window).y - 32);
+        window.draw(sprite);
+    }
+    for (int i = 0; i < 2; i++)
+    {
+        if ((lastMoveState == lastMoveInfo::CheckMate ||
+             lastMoveState == lastMoveInfo::OutofTime ||
+             lastMoveState == lastMoveInfo::Resign) &&
+            state.isWhiteTurn == i)
+        {
+            winner.setString(PlayerNames[i] + "\nWins!!");
+        }
+
+        int numsToDisplay[4] = {0, 0, 0, 0};
+        clockTickToTime(playerTime[i] / FPS, numsToDisplay);
+        timeStr[i] = std::to_string(numsToDisplay[0]) +
+                  std::to_string(numsToDisplay[1]) + ":" +
+                  std::to_string(numsToDisplay[2]) +
+                  std::to_string(numsToDisplay[3]);
+    }
+    resetScoreTexture();
+
+    window.draw(frameSprite1);
+    window.draw(frameSprite2);
+    window.draw(player1);
+    window.draw(player2);
+    window.draw(head1);
+    window.draw(head2);
+    window.draw(buttonreset);
+    window.draw(textreset);
+    window.draw(buttonresign);
+    window.draw(textresign);
+    window.draw(buttonex);
+    window.draw(textex);
+    window.draw(winner);
 }
 
 void ChessBoard::update()
 {
+
     if ((lastMoveState == lastMoveInfo::None) ||
         (lastMoveState == lastMoveInfo::Check))
     {
@@ -199,17 +416,13 @@ void ChessBoard::update()
 
 void ChessBoard::setBoard()
 {
-    BoardState state;
+    state = BoardState();
     promotionInfo.promotion = false;
     state.players[0] = new Player(PlayerNames[0], true);
     state.players[1] = new Player(PlayerNames[1], false);
     hasPlayedMove[0] = false;
     hasPlayedMove[1] = false;
-    // load score texture
-    // scoreTexture[0].loadSentence(scoreToString(score[0]), 30,
-    //                              TextureManager::darkGreen);
-    // scoreTexture[1].loadSentence(scoreToString(score[1]), 30,
-    //                              TextureManager::darkGreen);
+    resetScoreTexture();
 
     // Handle FEN string
     Engine::handleFENString(STARTING_FEN, state);
@@ -227,6 +440,50 @@ void ChessBoard::setBoard()
     }
 }
 
+bool ChessBoard::makeMove(Coordinate location, int promotionID)
+{
+
+    Promotion::promotion promotion = Promotion::None;
+    // handlePromotionindex
+    if (promotionID >= 0 && promotionID <= 4)
+    {
+        promotion = Promotion::promotionMap[promotionID];
+    }
+    Coordinate temp = state.dragPieceLocation;
+    lastMoveInfo info = Engine::handlePiecePlacement(location, state, moves,
+                                                     promotionInfo, promotion);
+
+    moves.clear();
+    if (info.success)
+    {
+        // SoundManager::playSound(!state.isWhiteTurn ? SoundManager::WhiteMove
+        //    : SoundManager::BlackMove);
+        soundManager.playSound(!state.isWhiteTurn ? "WhiteMove" : "BlackMove");
+        lastMoveState = info.state;
+        lastMove.made = true;
+        lastMove.startPos = temp;
+        lastMove.endPos = location;
+        int count = Engine::generateAllMoves(state, allMoves);
+        if (count == 0)
+        {
+            if (info.state == lastMoveInfo::Check)
+            {
+                lastMoveState = lastMoveInfo::CheckMate;
+                std::cout << "Checkmate!!!" << std::endl;
+                score[state.isWhiteTurn] += 1;
+            }
+            else
+            {
+                lastMoveState = lastMoveInfo::Draw;
+                score[0] += 0.5;
+                score[1] += 0.5;
+            }
+            resetScoreTexture();
+        }
+    }
+    return info.success;
+}
+
 void ChessBoard::resetBoard()
 {
     // We swap the names, namesTexture and score texture after game is reset
@@ -238,12 +495,20 @@ void ChessBoard::resetBoard()
     tempStr = PlayerNames[1];
     PlayerNames[1] = PlayerNames[0];
     PlayerNames[0] = tempStr;
-    // resetScoreTexture();
+    resetScoreTexture();
     enginePlaysWhite = !enginePlaysWhite;
 
     delete state.players[0];
     delete state.players[1];
     setBoard();
+}
+
+void ChessBoard::resetScoreTexture()
+{
+    head2.setString(PlayerNames[0]);
+    head1.setString(PlayerNames[1]);
+    player2.setString("Score: " + scoreToString(score[0]) + "\nTiming: " + timeStr[0]);
+    player1.setString("Score: " + scoreToString(score[1]) + "\nTiming: " + timeStr[1]);
 }
 
 void ChessBoard::goToMainMenu() { gameRef->goBackToMenu(); }

@@ -5,7 +5,8 @@
 class ChessBoard;
 class Engine;
 struct BoardState;
-class Player {
+class Player
+{
 public:
   Player(std::string playerName, bool isPlayerColorWhite);
   ~Player();
@@ -13,7 +14,7 @@ public:
   bool isWhite();
   std::string getName();
   // void addPiece(Piece *p);
-  friend class Gameboard;
+  friend class ChessBoard;
   friend class Engine;
   friend struct BoardState;
 

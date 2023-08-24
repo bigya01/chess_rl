@@ -31,6 +31,6 @@ private:
     sf::Text title, singlePlayer, multiPlayer, exit, timeText, time[3];
 
     int selectedTime = TimeIndex::Ten;
-
+    int timeIn[3] = {1, 10, 30};
 
 };
