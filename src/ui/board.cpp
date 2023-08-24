@@ -391,7 +391,7 @@ void ChessBoard::render()
         winner.setString(PlayerNames[state.isWhiteTurn] + "\nWins!!\nOut of Time");
         break;
     case lastMoveInfo::CheckMate:
-        sounds[1].play();
+        // sounds[1].play();
         winner.setString(PlayerNames[!state.isWhiteTurn] + "\nWins!!\nCheckmate");
         break;
     case lastMoveInfo::Draw:
@@ -409,6 +409,32 @@ void ChessBoard::render()
     default:
         winner.setString("");
         break;
+    }
+
+    if (promotionInfo.promotion){
+        int y = promotionInfo.location.i * tileSize + 70;
+        int x = promotionInfo.location.j * tileSize + 330;
+        sf::RectangleShape rect;
+        rect.setSize(sf::Vector2f(65, 4*65));
+        rect.setPosition(x, y);
+        rect.setFillColor(sf::Color(0xffffffFF));
+        window.draw(rect);
+
+        for(int i=1; i<5; i++){
+            if(!(i==1)){
+                y += state.isWhiteTurn ? 64 : -64;
+            }
+            sf::Sprite sprite;
+            sprite.setTexture(piecesTexture);
+            sprite.setTextureRect(sf::IntRect(i * 45, (state.isWhiteTurn ? 0 : 1) * 45, 45, 45));
+            sprite.setScale(64 / sprite.getLocalBounds().width, 64 / sprite.getLocalBounds().height);
+            sprite.setPosition(x, y);
+            window.draw(sprite);
+
+            
+        }
+
+
     }
 
     window.draw(frameSprite1);
