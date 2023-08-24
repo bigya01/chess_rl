@@ -140,7 +140,7 @@ void ChessBoard::init()
     winner.setCharacterSize(40);
     winner.setFillColor(sf::Color(0x7A3838FF)); // Hexadecimal color: #FF3366
     winner.setStyle(sf::Text::Bold);            // Set the player1 style to bold
-    winner.setPosition(1070, 40);
+    winner.setPosition(1030, 40);
 
     piecesTexture.loadFromFile("assets/images/pieces.png");
     piecesTexture.setSmooth(true);
@@ -244,8 +244,8 @@ void ChessBoard::handleMouseReleased(sf::Event &event)
         {
             if (!(lastMoveState == lastMoveInfo::CheckMate ||
                   lastMoveState == lastMoveInfo::Draw))
-                sounds[2].play();
-            ChessBoard::resign();
+                // sounds[2].play();
+                ChessBoard::resign();
         }
         if (lastMoveState != lastMoveInfo::None &&
             lastMoveState != lastMoveInfo::Check)
@@ -371,7 +371,7 @@ void ChessBoard::render()
              lastMoveState == lastMoveInfo::Resign) &&
             state.isWhiteTurn == i)
         {
-            sounds[0].play();
+            // sounds[0].play();
             winner.setString(PlayerNames[i] + "\nWins!!");
         }
 
@@ -383,6 +383,33 @@ void ChessBoard::render()
                      std::to_string(numsToDisplay[3]);
     }
     resetScoreTexture();
+
+    switch (lastMoveState)
+    {
+    case lastMoveInfo::OutofTime:
+        sounds[0].play();
+        winner.setString(PlayerNames[state.isWhiteTurn] + "\nWins!!\nOut of Time");
+        break;
+    case lastMoveInfo::CheckMate:
+        sounds[1].play();
+        winner.setString(PlayerNames[!state.isWhiteTurn] + "\nWins!!\nCheckmate");
+        break;
+    case lastMoveInfo::Draw:
+        sounds[0].play();
+        winner.setString("Draw!!");
+        break;
+    case lastMoveInfo::Resign:
+        sounds[0].play();
+        winner.setString(PlayerNames[state.isWhiteTurn] + "\nWins!!\nResigned.");
+        break;
+    case lastMoveInfo::Check:
+        // sounds[0].play();
+        winner.setString("Check!!");
+        break;
+    default:
+        winner.setString("");
+        break;
+    }
 
     window.draw(frameSprite1);
     window.draw(frameSprite2);
@@ -401,7 +428,6 @@ void ChessBoard::render()
 
 void ChessBoard::update()
 {
-
     if ((lastMoveState == lastMoveInfo::None) ||
         (lastMoveState == lastMoveInfo::Check))
     {
@@ -411,6 +437,7 @@ void ChessBoard::update()
         playerTime[!state.isWhiteTurn]--;
         if (playerTime[!state.isWhiteTurn] < 0)
         {
+
             lastMoveState = lastMoveInfo::OutofTime;
             playerTime[!state.isWhiteTurn] = 0;
             score[0] += 1;
@@ -473,13 +500,13 @@ bool ChessBoard::makeMove(Coordinate location, int promotionID)
             if (info.state == lastMoveInfo::Check)
             {
                 lastMoveState = lastMoveInfo::CheckMate;
-                sounds[2].play();
+                // sounds[2].play();
                 std::cout << "Checkmate!!!" << std::endl;
                 score[state.isWhiteTurn] += 1;
             }
             else
             {
-                sounds[0].play();
+                // sounds[0].play();
                 lastMoveState = lastMoveInfo::Draw;
                 score[0] += 0.5;
                 score[1] += 0.5;
@@ -540,12 +567,12 @@ void ChessBoard::engineMove()
     {
         if (check)
         {
-            sounds[2].play();
+            // sounds[2].play();
             lastMoveState = lastMoveInfo::CheckMate;
         }
         else
         {
-            sounds[0].play();
+            // sounds[0].play();
             lastMoveState = lastMoveInfo::Draw;
         }
     }
