@@ -34,7 +34,6 @@ public:
     void resign();
 
 private:
-    
     Game *gameRef;
     sf::SoundBuffer buffers[5];
     sf::Sound sounds[5];
@@ -77,6 +76,4 @@ private:
     sf::RectangleShape buttonreset, buttonresign, buttonex;
     sf::Texture piecesTexture;
     sf::CircleShape moveHint;
-
-
 };

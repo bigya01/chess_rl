@@ -1,6 +1,7 @@
 #include "pieces/rook.hpp"
 
-Rook::Rook(Coordinate pos, bool isColorWhite) : SlidePiece(pos, isColorWhite) {
+Rook::Rook(Coordinate pos, bool isColorWhite) : SlidePiece(pos, isColorWhite)
+{
 
   textureColumn = 4;
   loopStartIndex = 0;

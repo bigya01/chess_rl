@@ -4,7 +4,8 @@
 struct BoardState;
 class Engine;
 
-class Piece {
+class Piece
+{
 public:
   Piece(Coordinate pos, bool isColorWhite);
   virtual ~Piece();
@@ -41,7 +42,8 @@ protected:
   bool captured;
 };
 
-class SlidePiece : public Piece {
+class SlidePiece : public Piece
+{
 public:
   SlidePiece(Coordinate pos, bool isColorWhite);
   ~SlidePiece();

@@ -2,7 +2,8 @@
 #include "utils/structures.hpp"
 
 Bishop::Bishop(Coordinate pos, bool isColorWhite)
-    : SlidePiece(pos, isColorWhite) {
+    : SlidePiece(pos, isColorWhite)
+{
 
   textureColumn = 2;
   loopStartIndex = 4;

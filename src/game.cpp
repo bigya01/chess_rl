@@ -33,8 +33,6 @@ bool Game::running()
     return isRunning;
 }
 
-
-
 void Game::processEvents()
 {
     sf::Event event;

@@ -5,7 +5,8 @@
 
 #include "logic/game_state.hpp"
 
-class StateMachine {
+class StateMachine
+{
 public:
   StateMachine();
   ~StateMachine();

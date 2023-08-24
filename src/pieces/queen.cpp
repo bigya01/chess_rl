@@ -1,7 +1,8 @@
 #include "pieces/queen.hpp"
 
 Queen::Queen(Coordinate pos, bool isColorWhite)
-    : SlidePiece(pos, isColorWhite) {
+    : SlidePiece(pos, isColorWhite)
+{
 
   textureColumn = 1;
   loopStartIndex = 0;

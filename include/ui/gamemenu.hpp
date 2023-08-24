@@ -3,7 +3,6 @@
 #include "game.hpp"
 #include "logic/game_state.hpp"
 
-
 class GameMenu : public GameState
 {
 public:
@@ -24,7 +23,7 @@ public:
 private:
     sf::RenderWindow &window;
     sf::Font font;
-    
+
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;
     Game *gameRef;
@@ -33,5 +32,4 @@ private:
 
     int selectedTime = TimeIndex::Ten;
     int timeIn[3] = {1, 10, 30};
-
 };

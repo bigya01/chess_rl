@@ -2,7 +2,8 @@
 #include "logic/board_state.hpp"
 #include "logic/engine.hpp"
 
-Piece::Piece(Coordinate pos, bool isColorWhite) : position(pos) {
+Piece::Piece(Coordinate pos, bool isColorWhite) : position(pos)
+{
   static int pieceID = 1;
   this->isColorWhite = isColorWhite;
 
@@ -23,13 +24,21 @@ Coordinate Piece::slideDirectionOffset[8] = {
     {1, 0}, {-1, 0}, {0, -1}, {0, 1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
 
 Coordinate Piece::knightDirectionOffset[8] = {
-    {1, 2}, {-1, 2}, {1, -2}, {-1, -2}, {2, 1}, {2, -1}, {-2, -1}, {-2, 1},
+    {1, 2},
+    {-1, 2},
+    {1, -2},
+    {-1, -2},
+    {2, 1},
+    {2, -1},
+    {-2, -1},
+    {-2, 1},
 };
 
 void Piece::moveTo(Coordinate destination) { this->position = destination; }
 
 int Piece::generateLegalMoves(const BoardState &state,
-                              std::vector<Move> &moves) {
+                              std::vector<Move> &moves)
+{
   /*
    * Gets all the moves that can be done by the given piece
    * Then filters all the legal moves
@@ -39,7 +48,8 @@ int Piece::generateLegalMoves(const BoardState &state,
   generateAllMoves(state, pseudoLegalMoves);
 
   int moveCount = 0;
-  for (Move move : pseudoLegalMoves) {
+  for (Move move : pseudoLegalMoves)
+  {
     // Because of shallow copy this does not work, do not use it yet
     BoardState newState = state; // Somehow make this a full copy
     newState.dragPieceLocation = move.startPos;
@@ -57,9 +67,11 @@ int Piece::generateLegalMoves(const BoardState &state,
      *
      */
     if (p->getTextureColumn() == 0 && (move.startPos.j - move.endPos.j > 1 ||
-                                       move.startPos.j - move.endPos.j < -1)) {
+                                       move.startPos.j - move.endPos.j < -1))
+    {
       newState.isWhiteTurn = !newState.isWhiteTurn;
-      if (Engine::canDirectAttackKing(newState)) {
+      if (Engine::canDirectAttackKing(newState))
+      {
         continue;
       }
       newState.isWhiteTurn = !newState.isWhiteTurn;
@@ -68,7 +80,8 @@ int Piece::generateLegalMoves(const BoardState &state,
       // We can see if the side movement moves are legal, if so, do casteling
       int directionJ = move.endPos.j - move.startPos.j;
       bool found = false;
-      for (Move move : moves) {
+      for (Move move : moves)
+      {
         if (move.endPos.j - move.startPos.j == directionJ / 2)
           found = true;
       }
@@ -82,7 +95,8 @@ int Piece::generateLegalMoves(const BoardState &state,
      * if our king is in direct line of fire from opponent,
      * bad move we no add
      */
-    if (!Engine::canDirectAttackKing(newState)) {
+    if (!Engine::canDirectAttackKing(newState))
+    {
       moves.push_back(move);
       moveCount += 1;
     }
@@ -94,17 +108,24 @@ int Piece::generateLegalMoves(const BoardState &state,
 void Piece::getCaptured() { captured = true; }
 bool Piece::isCaptured() { return captured; }
 
-bool Piece::canMoveTo(Coordinate c, const BoardState &state) {
+bool Piece::canMoveTo(Coordinate c, const BoardState &state)
+{
   /*
    * Returs true if the piece can move to a square
    */
 
-  if (state.isEmpty(c)) {
+  if (state.isEmpty(c))
+  {
     return true;
-  } else {
-    if (state.isPieceWhite(c) == isColorWhite) {
+  }
+  else
+  {
+    if (state.isPieceWhite(c) == isColorWhite)
+    {
       return false;
-    } else {
+    }
+    else
+    {
     }
     return true;
   }
@@ -120,22 +141,29 @@ SlidePiece::SlidePiece(Coordinate pos, bool isColorWhite)
 SlidePiece::~SlidePiece() {}
 
 int SlidePiece::generateAllMoves(const BoardState &state,
-                                 std::vector<Move> &moves) {
+                                 std::vector<Move> &moves)
+{
   moves.clear();
   int count = 0;
-  for (int i = loopStartIndex; i < loopStopIndex; i++) {
+  for (int i = loopStartIndex; i < loopStopIndex; i++)
+  {
     Coordinate tempPos = position;
     tempPos += slideDirectionOffset[i];
 
-    while (tempPos.isValidBoardIndex()) {
+    while (tempPos.isValidBoardIndex())
+    {
 
       bool captureTime = false;
-      if (!state.isEmpty(tempPos)) {
+      if (!state.isEmpty(tempPos))
+      {
         bool landingColor = state.isPieceWhite(tempPos);
         // If landing color is equal to the piece's color
-        if (landingColor == isColorWhite) {
+        if (landingColor == isColorWhite)
+        {
           break;
-        } else {
+        }
+        else
+        {
           captureTime = true;
         }
       }
@@ -148,7 +176,8 @@ int SlidePiece::generateAllMoves(const BoardState &state,
       tempPos += slideDirectionOffset[i];
       count++;
 
-      if (captureTime) {
+      if (captureTime)
+      {
         break;
       }
     }

@@ -4,9 +4,12 @@
 StateMachine::StateMachine() {}
 StateMachine::~StateMachine() { clear(); }
 
-void StateMachine::AddState(GameState *newState, bool isReplacing) {
-  if (!this->_states.empty()) {
-    if (isReplacing) {
+void StateMachine::AddState(GameState *newState, bool isReplacing)
+{
+  if (!this->_states.empty())
+  {
+    if (isReplacing)
+    {
       delete this->_states.top();
       this->_states.pop();
     }
@@ -15,9 +18,11 @@ void StateMachine::AddState(GameState *newState, bool isReplacing) {
   this->_states.top()->init();
 }
 
-void StateMachine::clear() {
+void StateMachine::clear()
+{
   size_t count = this->_states.size();
-  for (size_t i = 0; i < count; i++) {
+  for (size_t i = 0; i < count; i++)
+  {
     delete this->_states.top();
     this->_states.pop();
   }

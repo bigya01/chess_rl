@@ -2,16 +2,18 @@
 #include <chrono>
 
 #define STARTING_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-#define NEW_FEN                                                                \
+#define NEW_FEN \
   "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq -"
 
-void Test::standardPerft(int a) {
+void Test::standardPerft(int a)
+{
   using std::chrono::duration;
   using std::chrono::duration_cast;
   using std::chrono::high_resolution_clock;
   using std::chrono::milliseconds;
 
-  for (int i = 0; i < a; i++) {
+  for (int i = 0; i < a; i++)
+  {
     std::cout << "Depth: " << i + 1 << std::endl;
     std::cout << "Number of Positions: ";
 
@@ -25,7 +27,8 @@ void Test::standardPerft(int a) {
   }
 }
 
-void Test::generateAllMoves(int depth, bool first) {
+void Test::generateAllMoves(int depth, bool first)
+{
   /*
    * Generates all the moves upto a certain depth
    */
@@ -41,7 +44,8 @@ void Test::generateAllMoves(int depth, bool first) {
   std::cout << getNumberOfMoves(depth, state, first) << std::endl;
 }
 
-int Test::getNumberOfMoves(int depth, const BoardState &state, bool first) {
+int Test::getNumberOfMoves(int depth, const BoardState &state, bool first)
+{
   /*
    * Recursively generates all the moves
    */
@@ -51,33 +55,31 @@ int Test::getNumberOfMoves(int depth, const BoardState &state, bool first) {
 
   // int loops = 0;
   int count = 0;
-  for (std::vector<Move> &moveList : allMoves) {
-    for (Move &move : moveList) {
+  for (std::vector<Move> &moveList : allMoves)
+  {
+    for (Move &move : moveList)
+    {
       BoardState s = state;
       s.dragPieceLocation = move.startPos;
       s.dragPieceId = s.getId(move.startPos);
       Engine::placePiece(move, s);
-      if (depth == 0) {
+      if (depth == 0)
+      {
         count++;
-        if (first) {
+        if (first)
+        {
           move.display();
           std::cout << 1 << std::endl;
         }
-      } else {
+      }
+      else
+      {
         int num = 0;
-        /*
-        if (loops == 2) {
-          std::cout << "---" << std::endl;
-          num = getNumberOfMoves(depth - 1, s, true);
-          std::cout << "---" << std::endl;
-        } else {
-          num = getNumberOfMoves(depth - 1, s, false);
-        }
-        */
         num = getNumberOfMoves(depth - 1, s, false);
 
         count += num;
-        if (first) {
+        if (first)
+        {
           move.display();
           std::cout << num << std::endl;
         }

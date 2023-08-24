@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    if(argc == 2)
+    if (argc == 2)
     {
         Test t;
         t.standardPerft(atoi(argv[1]));
@@ -23,5 +23,4 @@ int main(int argc, char *argv[])
     }
     delete game;
     return 0;
-    
 }

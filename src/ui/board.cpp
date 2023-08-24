@@ -245,7 +245,7 @@ void ChessBoard::handleMouseReleased(sf::Event &event)
             if (!(lastMoveState == lastMoveInfo::CheckMate ||
                   lastMoveState == lastMoveInfo::Draw))
                 sounds[2].play();
-                ChessBoard::resign();
+            ChessBoard::resign();
         }
         if (lastMoveState != lastMoveInfo::None &&
             lastMoveState != lastMoveInfo::Check)
@@ -462,7 +462,7 @@ bool ChessBoard::makeMove(Coordinate location, int promotionID)
     {
         // SoundManager::playSound(!state.isWhiteTurn ? SoundManager::WhiteMove
         //    : SoundManager::BlackMove);
-        state.isWhiteTurn? sounds[4].play(): sounds[3].play();
+        state.isWhiteTurn ? sounds[4].play() : sounds[3].play();
         lastMoveState = info.state;
         lastMove.made = true;
         lastMove.startPos = temp;

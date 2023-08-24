@@ -9,7 +9,7 @@ struct BoardState
     bool CastleAvailability[4];
     bool enPassantAvailable;
     Coordinate enPassant;
-    
+
     bool isWhiteTurn;
 
     int dragPieceId;
