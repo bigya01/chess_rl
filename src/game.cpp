@@ -33,15 +33,7 @@ bool Game::running()
     return isRunning;
 }
 
-void Game::run()
-{
-    while (isRunning)
-    {
-        processEvents();
-        update();
-        render();
-    }
-}
+
 
 void Game::processEvents()
 {
@@ -57,7 +49,6 @@ void Game::processEvents()
 
 void Game::update()
 {
-    count++;
     stateMachine.GetActiveState()->update();
 }
 

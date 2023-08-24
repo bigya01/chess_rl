@@ -19,11 +19,9 @@ public:
     Game();
     ~Game();
     void init();
-    void run();
     void processEvents();
     void update();
     void render();
-    void clean();
     void exitGame();
 
     bool running();
@@ -36,5 +34,4 @@ private:
     bool isRunning;
     StateMachine stateMachine;
     GameInfo::State state;
-    int count = 0;
 };

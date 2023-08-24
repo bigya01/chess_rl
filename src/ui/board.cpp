@@ -17,7 +17,6 @@ namespace Promotion
 }
 
 void clockTickToTime(int clock, int timeInfo[4]);
-// bool buttonPress(int x, int y, const SDL_Rect &rect);
 std::string scoreToString(float score);
 
 ChessBoard::ChessBoard(Game *_gameRef, std::string name1, std::string name2,

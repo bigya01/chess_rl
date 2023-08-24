@@ -79,20 +79,4 @@ private:
     sf::CircleShape moveHint;
 
 
-
-    // UI
-    sf::RectangleShape resetButton, exitButton, resignButton;
-    sf::Texture horizontalNotation[8];
-    sf::Texture verticalNotation[8];
-    sf::Texture playerNamesTexture[2]; // Stores the texture of player
-    sf::Texture resetButtonTexture;
-    sf::Texture checkTexture, checkMateTexture, outOfTimeTexture, matchDrawTexture,
-        blackResignTexture, whiteResignTexture;
-    sf::Texture numberTextures[10]; // Stores the textures for numbers 0-9
-    sf::Texture wonTexture;
-    sf::Texture colonTexture;
-    sf::Texture pieceTexture; // Stores texture of all pieces
-    sf::Texture exitButtionTexture;
-    sf::Texture resignButtonTexture;
-    sf::Texture scoreboardTexture;
 };
