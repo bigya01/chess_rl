@@ -24,6 +24,7 @@ public:
 private:
     sf::RenderWindow &window;
     sf::Font font;
+    
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;
     Game *gameRef;

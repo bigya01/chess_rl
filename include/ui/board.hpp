@@ -3,8 +3,8 @@
 #include <logic/game_state.hpp>
 #include <logic/board_state.hpp>
 #include <game.hpp>
-#include "utils/sound_manager.hpp"
 #include <list>
+#include <SFML/Audio.hpp>
 
 class ChessBoard : public GameState
 {
@@ -34,8 +34,10 @@ public:
     void resign();
 
 private:
-    SoundManager soundManager;
+    
     Game *gameRef;
+    sf::SoundBuffer buffers[5];
+    sf::Sound sounds[5];
     sf::RenderWindow &window;
     BoardState state;
     Coordinate boardStartPos;

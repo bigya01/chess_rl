@@ -38,12 +38,16 @@ ChessBoard::~ChessBoard()
 void ChessBoard::init()
 {
     setBoard();
-    soundManager.loadSound("WhiteMove", "assets/sounds/movew.wav");
-    soundManager.loadSound("BlackMove", "assets/sounds/moveb.wav");
-    soundManager.loadSound("Capture", "assets/sounds/capture.wav");
-    soundManager.loadSound("Check", "assets/sounds/alert.wav");
-    soundManager.loadSound("CheckMate", "assets/sounds/checkmate.wav");
-
+    buffers[0].loadFromFile("assets/sounds/alert.wav");
+    buffers[1].loadFromFile("assets/sounds/capture.wav");
+    buffers[2].loadFromFile("assets/sounds/checkmate.wav");
+    buffers[3].loadFromFile("assets/sounds/moveb.wav");
+    buffers[4].loadFromFile("assets/sounds/movew.wav");
+    for (int i = 0; i < 5; i++)
+    {
+        sounds[i].setBuffer(buffers[i]);
+        sounds[i].setVolume(100);
+    }
     font.loadFromFile("assets/fonts/jost.ttf");
 
     frame.loadFromFile("assets/images/framee.png");
@@ -152,7 +156,6 @@ void ChessBoard::handleInput(sf::Event &event)
 {
     if (event.type == sf::Event::MouseButtonPressed)
     {
-
         handleMousePressed(event);
     }
     else if (event.type == sf::Event::MouseButtonReleased)
@@ -242,6 +245,7 @@ void ChessBoard::handleMouseReleased(sf::Event &event)
         {
             if (!(lastMoveState == lastMoveInfo::CheckMate ||
                   lastMoveState == lastMoveInfo::Draw))
+                sounds[2].play();
                 ChessBoard::resign();
         }
         if (lastMoveState != lastMoveInfo::None &&
@@ -368,15 +372,16 @@ void ChessBoard::render()
              lastMoveState == lastMoveInfo::Resign) &&
             state.isWhiteTurn == i)
         {
+            sounds[0].play();
             winner.setString(PlayerNames[i] + "\nWins!!");
         }
 
         int numsToDisplay[4] = {0, 0, 0, 0};
         clockTickToTime(playerTime[i] / FPS, numsToDisplay);
         timeStr[i] = std::to_string(numsToDisplay[0]) +
-                  std::to_string(numsToDisplay[1]) + ":" +
-                  std::to_string(numsToDisplay[2]) +
-                  std::to_string(numsToDisplay[3]);
+                     std::to_string(numsToDisplay[1]) + ":" +
+                     std::to_string(numsToDisplay[2]) +
+                     std::to_string(numsToDisplay[3]);
     }
     resetScoreTexture();
 
@@ -458,7 +463,7 @@ bool ChessBoard::makeMove(Coordinate location, int promotionID)
     {
         // SoundManager::playSound(!state.isWhiteTurn ? SoundManager::WhiteMove
         //    : SoundManager::BlackMove);
-        soundManager.playSound(!state.isWhiteTurn ? "WhiteMove" : "BlackMove");
+        state.isWhiteTurn? sounds[4].play(): sounds[3].play();
         lastMoveState = info.state;
         lastMove.made = true;
         lastMove.startPos = temp;
@@ -469,11 +474,13 @@ bool ChessBoard::makeMove(Coordinate location, int promotionID)
             if (info.state == lastMoveInfo::Check)
             {
                 lastMoveState = lastMoveInfo::CheckMate;
+                sounds[2].play();
                 std::cout << "Checkmate!!!" << std::endl;
                 score[state.isWhiteTurn] += 1;
             }
             else
             {
+                sounds[0].play();
                 lastMoveState = lastMoveInfo::Draw;
                 score[0] += 0.5;
                 score[1] += 0.5;
@@ -534,10 +541,12 @@ void ChessBoard::engineMove()
     {
         if (check)
         {
+            sounds[2].play();
             lastMoveState = lastMoveInfo::CheckMate;
         }
         else
         {
+            sounds[0].play();
             lastMoveState = lastMoveInfo::Draw;
         }
     }
