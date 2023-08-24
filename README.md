@@ -33,9 +33,9 @@ Krishant Timilsina    (078BCT045)
 ###  📋 Requirements
 
 To setup and use the project you will need to have the following tools installed:
- - [Xmake](https://xmake.io/)
+ - [Xmake](https://xmake.io/#/guide/installation)
 
-For windows, MCVC is recommended.
+For Windows, MCVC is reuired along with Microsoft Visual Studio for library commpilation. 
 
 ###  ⬇️ Installation
 
